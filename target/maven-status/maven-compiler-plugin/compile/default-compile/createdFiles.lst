@@ -1,0 +1,10 @@
+com\sis\entity\Student.class
+com\sis\servlet\DisplayServlet.class
+com\sis\entity\StudentScore.class
+com\sis\util\JPAUtil.class
+com\sis\dao\SubjectDAO.class
+com\sis\servlet\ScoreServlet.class
+com\sis\dao\StudentScoreDAO.class
+com\sis\dao\StudentDAO.class
+com\sis\entity\Subject.class
+com\sis\servlet\StudentServlet.class
