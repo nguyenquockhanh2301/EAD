@@ -24,6 +24,20 @@ public class ScoreServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        String editIdParam = req.getParameter("editId");
+        if (editIdParam != null && !editIdParam.trim().isEmpty()) {
+            try {
+                int editId = Integer.parseInt(editIdParam);
+                StudentScore existingScore = scoreDAO.findById(editId);
+                if (existingScore != null) {
+                    req.setAttribute("score", existingScore);
+                    req.setAttribute("isEdit", true);
+                }
+            } catch (NumberFormatException ignored) {
+                // Invalid id, continue in add mode.
+            }
+        }
+
         req.setAttribute("students", studentDAO.findAll());
         req.setAttribute("subjects", subjectDAO.findAll());
         req.getRequestDispatcher("/WEB-INF/views/addScore.jsp").forward(req, resp);
@@ -42,13 +56,28 @@ public class ScoreServlet extends HttpServlet {
         Student student = studentDAO.findById(studentId);
         Subject subject = subjectDAO.findById(subjectId);
 
-        StudentScore score = new StudentScore();
+        String scoreIdParam = req.getParameter("scoreId");
+        StudentScore score;
+        if (scoreIdParam != null && !scoreIdParam.trim().isEmpty()) {
+            int scoreId = Integer.parseInt(scoreIdParam);
+            score = scoreDAO.findById(scoreId);
+            if (score == null) {
+                score = new StudentScore();
+            }
+        } else {
+            score = new StudentScore();
+        }
+
         score.setStudent(student);
         score.setSubject(subject);
         score.setScore1(score1);
         score.setScore2(score2);
 
-        scoreDAO.save(score);
+        if (score.getStudentScoreId() > 0) {
+            scoreDAO.update(score);
+        } else {
+            scoreDAO.save(score);
+        }
 
         resp.sendRedirect(req.getContextPath() + "/display");
     }

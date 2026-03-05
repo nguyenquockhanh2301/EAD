@@ -74,15 +74,21 @@
 <div class="header">Student Information System</div>
 
 <div class="content">
-    <h2>Add Score</h2>
+    <h2><c:choose><c:when test="${isEdit}">Edit Score</c:when><c:otherwise>Add Score</c:otherwise></c:choose></h2>
 
     <form action="${pageContext.request.contextPath}/score" method="post">
+        <c:if test="${isEdit}">
+            <input type="hidden" name="scoreId" value="${score.studentScoreId}">
+        </c:if>
+
         <div class="form-group">
             <label for="studentId">Student:</label>
             <select id="studentId" name="studentId" required>
                 <option value="">-- Select Student --</option>
                 <c:forEach var="s" items="${students}">
-                    <option value="${s.studentId}">${s.studentCode} - ${s.fullName}</option>
+                    <option value="${s.studentId}" ${score != null && score.student.studentId == s.studentId ? 'selected' : ''}>
+                        ${s.studentCode} - ${s.fullName}
+                    </option>
                 </c:forEach>
             </select>
         </div>
@@ -91,20 +97,22 @@
             <select id="subjectId" name="subjectId" required>
                 <option value="">-- Select Subject --</option>
                 <c:forEach var="sub" items="${subjects}">
-                    <option value="${sub.subjectId}">${sub.subjectCode} - ${sub.subjectName}</option>
+                    <option value="${sub.subjectId}" ${score != null && score.subject.subjectId == sub.subjectId ? 'selected' : ''}>
+                        ${sub.subjectCode} - ${sub.subjectName}
+                    </option>
                 </c:forEach>
             </select>
         </div>
         <div class="form-group">
             <label for="score1">Score 1:</label>
-            <input type="number" id="score1" name="score1" step="0.1" min="0" max="10" required placeholder="0.0 - 10.0">
+            <input type="number" id="score1" name="score1" step="0.1" min="0" max="10" required placeholder="0.0 - 10.0" value="${score != null ? score.score1 : ''}">
         </div>
         <div class="form-group">
             <label for="score2">Score 2:</label>
-            <input type="number" id="score2" name="score2" step="0.1" min="0" max="10" required placeholder="0.0 - 10.0">
+            <input type="number" id="score2" name="score2" step="0.1" min="0" max="10" required placeholder="0.0 - 10.0" value="${score != null ? score.score2 : ''}">
         </div>
         <div class="btn-group">
-            <button type="submit" class="btn btn-save">Save</button>
+            <button type="submit" class="btn btn-save"><c:choose><c:when test="${isEdit}">Update</c:when><c:otherwise>Save</c:otherwise></c:choose></button>
             <a href="${pageContext.request.contextPath}/display" class="btn btn-cancel">Cancel</a>
         </div>
     </form>

@@ -77,6 +77,37 @@
             font-size: 16px;
         }
         .edit-icon:hover { color: #2e7d32; }
+
+        .pagination {
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .page-link {
+            padding: 6px 10px;
+            border: 1px solid #cfd8dc;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #2e7d32;
+            background: #fff;
+            min-width: 34px;
+            text-align: center;
+        }
+        .page-link:hover { background: #f1f8e9; }
+        .page-link.active {
+            background: #2e7d32;
+            color: #fff;
+            border-color: #2e7d32;
+            pointer-events: none;
+        }
+        .page-link.disabled {
+            color: #9e9e9e;
+            border-color: #e0e0e0;
+            pointer-events: none;
+            background: #fafafa;
+        }
     </style>
 </head>
 <body>
@@ -108,7 +139,7 @@
         <tbody>
             <c:forEach var="sc" items="${scores}" varStatus="loop">
                 <tr>
-                    <td>${loop.index + 1}</td>
+                    <td>${(currentPage - 1) * pageSize + loop.index + 1}</td>
                     <td>${sc.student.studentCode}</td>
                     <td>${sc.student.fullName}</td>
                     <td>${sc.subject.subjectName}</td>
@@ -116,7 +147,9 @@
                     <td><fmt:formatNumber value="${sc.score2}" pattern="0.0"/></td>
                     <td>${sc.subject.credit}</td>
                     <td>${sc.grade}</td>
-                    <td><a href="#" class="edit-icon" title="Edit">&#9998;</a></td>
+                    <td>
+                        <a href="${pageContext.request.contextPath}/score?editId=${sc.studentScoreId}" class="edit-icon" title="Edit">&#9998;</a>
+                    </td>
                 </tr>
             </c:forEach>
             <c:if test="${empty scores}">
@@ -124,6 +157,32 @@
             </c:if>
         </tbody>
     </table>
+
+    <c:if test="${totalPages > 1}">
+        <div class="pagination">
+            <c:choose>
+                <c:when test="${currentPage > 1}">
+                    <a class="page-link" href="${pageContext.request.contextPath}/display?page=${currentPage - 1}">Prev</a>
+                </c:when>
+                <c:otherwise>
+                    <span class="page-link disabled">Prev</span>
+                </c:otherwise>
+            </c:choose>
+
+            <c:forEach begin="1" end="${totalPages}" var="p">
+                <a class="page-link ${p == currentPage ? 'active' : ''}" href="${pageContext.request.contextPath}/display?page=${p}">${p}</a>
+            </c:forEach>
+
+            <c:choose>
+                <c:when test="${currentPage < totalPages}">
+                    <a class="page-link" href="${pageContext.request.contextPath}/display?page=${currentPage + 1}">Next</a>
+                </c:when>
+                <c:otherwise>
+                    <span class="page-link disabled">Next</span>
+                </c:otherwise>
+            </c:choose>
+        </div>
+    </c:if>
 </div>
 
 </body>
