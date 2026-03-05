@@ -67,6 +67,8 @@
         .btn-save:hover { background: #1b5e20; }
         .btn-cancel { background: #757575; }
         .btn-cancel:hover { background: #616161; }
+        .btn-delete { background: #c62828; }
+        .btn-delete:hover { background: #b71c1c; }
     </style>
 </head>
 <body>
@@ -113,6 +115,9 @@
         </div>
         <div class="btn-group">
             <button type="submit" class="btn btn-save"><c:choose><c:when test="${isEdit}">Update</c:when><c:otherwise>Save</c:otherwise></c:choose></button>
+            <c:if test="${isEdit}">
+                <button type="submit" class="btn btn-delete" name="action" value="delete" formnovalidate onclick="return confirm('Delete this score record?');">Delete</button>
+            </c:if>
             <a href="${pageContext.request.contextPath}/display" class="btn btn-cancel">Cancel</a>
         </div>
     </form>

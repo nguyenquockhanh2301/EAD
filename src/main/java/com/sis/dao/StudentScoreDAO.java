@@ -60,6 +60,24 @@ public class StudentScoreDAO {
         }
     }
 
+    public void deleteById(int id) {
+        EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            StudentScore score = em.find(StudentScore.class, id);
+            if (score != null) {
+                em.remove(score);
+            }
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
+
     public long countAll() {
         EntityManager em = JPAUtil.getEntityManagerFactory().createEntityManager();
         try {

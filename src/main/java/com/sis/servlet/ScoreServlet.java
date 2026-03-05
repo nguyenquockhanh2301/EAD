@@ -48,6 +48,21 @@ public class ScoreServlet extends HttpServlet {
             throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
 
+        String action = req.getParameter("action");
+        if ("delete".equals(action)) {
+            String scoreIdParam = req.getParameter("scoreId");
+            if (scoreIdParam != null && !scoreIdParam.trim().isEmpty()) {
+                try {
+                    int scoreId = Integer.parseInt(scoreIdParam);
+                    scoreDAO.deleteById(scoreId);
+                } catch (NumberFormatException ignored) {
+                    // Invalid id, ignore delete and continue redirect.
+                }
+            }
+            resp.sendRedirect(req.getContextPath() + "/display");
+            return;
+        }
+
         int studentId = Integer.parseInt(req.getParameter("studentId"));
         int subjectId = Integer.parseInt(req.getParameter("subjectId"));
         double score1 = Double.parseDouble(req.getParameter("score1"));
